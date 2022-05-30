@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "OpenT12.h"
+#include "max6675.h"
 
 BluetoothSerial SerialBT;
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
@@ -9,6 +10,7 @@ BluetoothSerial SerialBT;
 OneButton RButton(BUTTON_PIN, true);
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C Disp(U8G2_R0, /* reset=*/ U8X8_PIN_NONE, /* clock=*/ 22, /* data=*/21);
 PID MyPID(&TipTemperature, &PID_Output, &PID_Setpoint, aggKp, aggKi, aggKd, DIRECT);
+MAX6675 thermocouple(18, 5, 19);
 /////////////////////////////////////////////////////////////////
 
 char* TipName = "文件系统错误：请上报";
@@ -79,7 +81,7 @@ char ChipMAC_S[19] = {0};
 char CompileTime[20];
 
 /////////////////////////////////////////////////////////////////
-
+void loopTask2(void *param);
 //先初始化硬件->显示LOGO->初始化软件
 void setup()
 {
@@ -151,9 +153,14 @@ void setup()
         Pop_Windows("身份验证失败");
     }
     SYS_Ready = true;
-
+    xTaskCreatePinnedToCore(loopTask2,"loopTask2",8192,NULL,1,NULL,1);
 }
-
+void loopTask2(void *param){
+    while(1){
+        TipTemperature = kalmanFilter(&KFP_Temp, (float) thermocouple.readCelsius());
+        delay(100);
+    }
+}
 void loop()
 {
     //获取按键
