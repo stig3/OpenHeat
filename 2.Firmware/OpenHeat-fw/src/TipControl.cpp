@@ -1,7 +1,6 @@
 #include "OpenT12.h"
 
 //[既然有了nmos 为啥还要pmos]科普:https://www.bilibili.com/video/BV1Mb4y1k7fd?from=search&seid=15411923932488650975
-MAX6675 thermocouple(18, 5, 19);
 
 enum MOS_Type {
     PMOS = 0,
