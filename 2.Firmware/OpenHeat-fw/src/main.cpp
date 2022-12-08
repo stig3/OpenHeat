@@ -158,7 +158,8 @@ void setup()
 void loopTask2(void *param){
     while(1){
         TipTemperature = kalmanFilter(&KFP_Temp, (float) thermocouple.readCelsius());
-        delay(100);
+        Serial.println(thermocouple.readCelsius());
+        delay(250);
     }
 }
 void loop()

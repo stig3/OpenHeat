@@ -90,7 +90,7 @@ void PWMOutput(uint8_t pwm) {
 /**
  *调用卡尔曼滤波器 实践
  */
-KFP KFP_Temp = {0.02, 0, 0, 0, 0.01, 4.5};
+KFP KFP_Temp = {0.02, 0, 25, 0, 0.01, 4.5};
 float SamplingRatioWork = 10;           //采样/加热 比率
 //获取ADC读数
 int GetADC0(void) {
